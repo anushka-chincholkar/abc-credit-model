@@ -14,7 +14,7 @@ and fully offline (no ANTHROPIC_API_KEY -> deterministic normalisation + templat
 explanation), so it is testable without a key.
 """
 from __future__ import annotations
-import sys, json
+import sys, json, re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -74,7 +74,12 @@ def _match_vehicle(text: str) -> str | None:
             return name
     hits = [name for name in catalog if up and up in name.upper()]
     if not hits:
-        hits = [name for name in catalog if any(w in name.upper() for w in up.split())]
+        # Whole-word match on words of len >= 3 only -- short/common words (e.g. "a", "I",
+        # "the") are near-universal substrings of catalog names and would false-positive-match
+        # almost any free text (e.g. "I want a loan") to some vehicle.
+        words = [w for w in re.findall(r"[A-Z0-9]+", up) if len(w) >= 3]
+        hits = [name for name in catalog
+                if any(re.search(rf"\b{re.escape(w)}\b", name.upper()) for w in words)]
     return max(hits, key=lambda n: catalog[n]["count"]) if hits else None
 
 
@@ -207,6 +212,10 @@ def interactive_cli():
 
 
 if __name__ == "__main__":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except (AttributeError, OSError):
+        pass  # non-reconfigurable stream (e.g. redirected to a file); safe to ignore
     if len(sys.argv) > 1 and sys.argv[1].endswith(".json"):
         run_session(json.load(open(sys.argv[1])), interactive=True)
     else:

@@ -201,6 +201,10 @@ def interactive_cli():
 
 
 if __name__ == "__main__":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except (AttributeError, OSError):
+        pass  # non-reconfigurable stream (e.g. redirected to a file); safe to ignore
     if len(sys.argv) > 1 and sys.argv[1].endswith(".json"):
         with open(sys.argv[1]) as f:
             run_session(json.load(f), interactive=True)
