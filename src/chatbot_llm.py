@@ -61,26 +61,41 @@ STEPS = [
 ]
 
 
-def _match_vehicle(text: str) -> str | None:
-    """Map free text / index to a catalog Model_Description (offline-safe)."""
+def _match_vehicle(text: str, return_confidence: bool = False):
+    """Map free text / index to a catalog Model_Description (offline-safe).
+
+    With return_confidence=True, also reports whether the match is unambiguous
+    (an exact name, a numbered pick, or a substring that identifies exactly one
+    catalog entry) vs a best-guess (a substring/word shared by several entries,
+    e.g. "apache" matching many APACHE variants, or the loose whole-word
+    fallback) -- callers that want to confirm ambiguous guesses with the user
+    (see src/chat_agent.py) use this instead of silently trusting any hit."""
+    def _out(match, confident):
+        return (match, confident) if return_confidence else match
+
     veh = _assets()["veh"]; popular = veh["popular"]; catalog = veh["catalog"]
     t = (text or "").strip()
     if t.isdigit():  # picked a number from the list
         i = int(t) - 1
-        return popular[i] if 0 <= i < len(popular) else None
+        m = popular[i] if 0 <= i < len(popular) else None
+        return _out(m, m is not None)
     up = t.upper()
-    for name in catalog:  # exact / substring match
+    for name in catalog:  # exact match
         if up == name.upper():
-            return name
+            return _out(name, True)
     hits = [name for name in catalog if up and up in name.upper()]
-    if not hits:
-        # Whole-word match on words of len >= 3 only -- short/common words (e.g. "a", "I",
-        # "the") are near-universal substrings of catalog names and would false-positive-match
-        # almost any free text (e.g. "I want a loan") to some vehicle.
-        words = [w for w in re.findall(r"[A-Z0-9]+", up) if len(w) >= 3]
-        hits = [name for name in catalog
-                if any(re.search(rf"\b{re.escape(w)}\b", name.upper()) for w in words)]
-    return max(hits, key=lambda n: catalog[n]["count"]) if hits else None
+    if hits:
+        m = max(hits, key=lambda n: catalog[n]["count"])
+        return _out(m, len(hits) == 1)  # unambiguous only if the substring is unique
+    # Whole-word match on words of len >= 3 only -- short/common words (e.g. "a", "I",
+    # "the") are near-universal substrings of catalog names and would false-positive-match
+    # almost any free text (e.g. "I want a loan") to some vehicle. This tier is always a
+    # best-guess (never "confident") since a bare word can plausibly mean several vehicles.
+    words = [w for w in re.findall(r"[A-Z0-9]+", up) if len(w) >= 3]
+    hits = [name for name in catalog
+            if any(re.search(rf"\b{re.escape(w)}\b", name.upper()) for w in words)]
+    m = max(hits, key=lambda n: catalog[n]["count"]) if hits else None
+    return _out(m, False)
 
 
 def _collect_value(step, raw_text):

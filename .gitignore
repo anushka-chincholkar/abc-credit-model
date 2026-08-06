@@ -21,13 +21,8 @@ venv/
 # Env / secrets
 .env
 .env.*
+!.env.example
 *.pem
-
-# Data (raw training data / PII — not for GitHub)
-data/
-
-# Generated model artifacts (rebuild via 04_final_eval.py / 08_calibrate.py / build_assets.py)
-artifacts/
 
 # Logs (incl. PII-masked chatbot application log)
 logs/

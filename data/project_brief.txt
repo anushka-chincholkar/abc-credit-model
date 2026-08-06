@@ -1,0 +1,123 @@
+ABC Credit Loan Approval Chatbot: Project Brief
+1. Background
+ABC Credit is an NBFC with over 15 years of lending across more than 10 product categories. A prospective customer can apply for a loan or at a ABC dealership. The application process carries two competing goals: minimise the time the customer spends filling the form, and reduce the credit risk (the risk of missed or late repayments) that a new applicant may carry. With many first-time applicants and a limited set of fields to ask from, the core challenge is to approve or decline a loan application accurately and quickly.
+Your task is to design and implement a chatbot that:
+	•	Collects a set of applicant information (demographics, employment, self-reported finances, and the vehicle being financed).
+	•	Evaluates the application in real time using a trained machine-learning model that runs on the collected information.
+	•	Returns an Approve or Decline decision at the end of the session.
+2. Objectives
+a. Customer experience. Offer a customer friendly chatbot that finishes an application in ≤ X minutes. (Select your time to completion and justify). 
+b. Accuracy. Achieve above a benchmark level of accuracy, precision and recall.
+c. Real-time decisioning. Provide an “Approve/Decline” response within ≤ Y seconds after final input. 
+d. Repository - Log every input, answer, feature value and model score
+3. Steps
+	•	Chatbot asks a dynamic sequence of questions 
+	•	With the collected data calls the trained ML model and use its probability output for final approve/decline decisioning 
+	•	Present the decision to the applicant and offer the next steps 
+	•	Ensure security and privacy of users by masking PII data 
+Note: too many questions can discourage a customer from completing the form. Selecting an optimal, minimal set of fields for the model is part of the task.
+4. Dataset
+You are provided with a training file (csv) of historical loan applications, each labelled APPROVED or DECLINED. A separate hold-out test set has been reserved for final evaluation and is not shared with you, so build your model to generalise rather than to memorise the training data.
+The dataset has 17 columns. Decision is the target you predict.
+5. Data Dictionary
+Field
+Type
+Description
+Example values
+ID
+Integer
+Unique application identifier. Reference only, not a predictor.
+1, 2, 3
+Qualifications
+Categorical
+Applicant's highest educational qualification.
+SSC, HSC, UG, GRAD, PG, OTHERS
+Employment_Type
+Categorical
+Employment or occupation category. Categories include SAL (salaried), SEP (self-employed), STU (student), AGR (agriculture), PEN(Pensioner),  NONEARNMEM(Non-Earning Member), NREGI(Non-Regular Income), NPP(Non-Permanent Probationary)
+SAL, SEP, AGR, STU, NREGI
+Age
+Integer
+Applicant's age in years at the time of application. Policy applies to ages 18 to 60.
+24, 41, 58
+Pincode
+Categorical
+Six-digit postal code of the applicant's location.
+502110, 560002
+Gender
+Categorical
+Applicant's gender.
+Male, Female
+Product_Code
+Categorical
+Type of two-wheeler financed.
+MC (motorcycle), SC (scooter), MO (moped), EB (electric)
+Loan_Amount
+Numeric (INR)
+Loan amount, in rupees.
+59300, 153839
+LTV
+Numeric (percent)
+Loan-to-value ratio: the loan amount as a percentage of the vehicle value.
+69.76, 84.99
+Resident_Type
+Categorical
+Applicant's residential status.
+O (owned), R (rented), L(leased)
+Net_salary
+Numeric (INR)
+Applicant's self-reported monthly income, in rupees.
+25000, 35000
+Final_Tier
+Categorical (ordinal)
+Market tier of the applicant's location, ordered by the numeric prefix from large cities to rural areas.
+01 Megapolis (A), 02 Megapolis (B), 03 Large Metro, 04 Metro, 05 Urban, 06 Semi-Urban, 07 Rural
+Make_Code
+Categorical
+Make or family of the vehicle.
+JUPITER, RAIDER, APACHE, NTORQ, RADEON, RONIN, MOPEDS, SPORT, ZEST, TVS, CITY PLUS
+Model_Description
+Text
+Full descriptive name of the vehicle model.
+TVS RAIDER DISC BSVI
+Model_Variant
+Categorical
+Variant or engine descriptor of the vehicle.
+125 CC DISC, XL 100CC, 160 DISC, EBIKE, SCOOTY
+PAST_LOANS_ACTIVE
+Binary
+Whether the applicant currently has an active prior loan.
+PAST_LOANS_ACTIVE, NO_PAST_LOANS
+Decision
+Target (Binary)
+The outcome to predict: loan approved or declined.
+APPROVED, DECLINED
+
+The example values above show common codes, not the complete set. The full file may contain additional categories in fields such as Make_Code, Model_Description, and Final_Tier. Build your pipeline so that an unseen category does not break it.
+
+
+
+6. Working with the Data
+The dataset may carry the imperfections that such real life data usually has. Before you model, you are expected to:
+	•	Explore the data thoroughly: distributions, summary statistics, and the relationship of each field to the target. Report what you find.
+	•	Examine the balance between approved and declined cases, and let it guide both your modelling approach and your choice of evaluation metric. 
+	•	Assess and improve data quality as you judge appropriate, and explain the decisions you make.
+	•	Engineer and select features: decide which fields to keep, transform, or combine, and how to encode categorical and text fields.
+Identifying and handling issues in the data is part of what you are assessed on. This brief deliberately does not list those issues for you. Treat the dataset the way you would treat a real one handed to you on the job.
+7. Modelling Approach: Predictive and Generative Components
+This project has a predictive part and a generative part, and they must remain separate.
+The approve or decline decision must come from the trained predictive model, using its probability output against a threshold you choose. If you use a language model to drive the chatbot conversation (asking questions, validating or clarifying answers, explaining the outcome and next steps), keep it strictly in the interaction layer: gathering inputs and communicating with the applicant. The credit decision itself must not be made by a language model. This separation keeps decisions consistent, auditable, and defensible.
+8. Model Evaluation Metrics
+Report the following on the held-out test set.
+Primary metric: Accuracy, Precision and Recall. This measures how well the model ranks applicants by risk, independent of any single cut-off. 
+Threshold-based metrics. Once you choose a probability cut-off for the approve or decline call, report the confusion matrix, precision, recall, and F1. Pay particular attention to recall on the DECLINED class, since that measures how many risky applicants you actually catch.
+Threshold justification. Your cut-off is a business trade-off. A stricter threshold rejects more good customers, which is lost business. A looser one approves more risky ones, which is default risk. State the threshold you chose and the reasoning behind it.
+9. Deliverables
+	•	Your data-cleaning and preprocessing pipeline, including how you handled data quality, encoding, and feature selection.
+	•	The trained model with reproducible training code (notebook or scripts).
+	•	The chatbot implementation: the question flow, the call to the model, and the final Approve or Decline output, with PII masking.
+	•	Predictions on the held-out test set in the required format. 
+	•	A short report covering: which fields you kept and why, the issues you found in the data and how you handled them, your model choice, your evaluation metrics, your latency, and your chosen values of X and Y with justification.
+10. Evaluation
+Submissions are assessed on: model performance on the held-out set the quality of your exploratory analysis and data handling, the quality of feature engineering and selection, chatbot functionality and the field-count and latency trade-offs, completeness of logging, and the clarity and reasoning in the report.
+
