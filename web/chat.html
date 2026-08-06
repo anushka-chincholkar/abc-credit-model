@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ABC Credit — Loan Assistant</title>
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --panel: #ffffff;
+    --text: #1a2033;
+    --muted: #6b7280;
+    --border: #e5e8f0;
+    --accent: #4338ca;
+    --accent-soft: #eef0fd;
+    --bot-bubble: #eef0f6;
+    --user-bubble: #4338ca;
+    --user-text: #ffffff;
+    --approve: #0f9d58;
+    --approve-soft: #e8f7ee;
+    --decline: #d93025;
+    --decline-soft: #fdecea;
+    --radius: 14px;
+    --shadow: 0 8px 30px rgba(20, 24, 50, 0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1220;
+      --panel: #171a2b;
+      --text: #eef0fa;
+      --muted: #9aa0b4;
+      --border: #2a2e45;
+      --accent: #8b8ff8;
+      --accent-soft: #23264a;
+      --bot-bubble: #22263d;
+      --user-bubble: #8b8ff8;
+      --user-text: #14162a;
+      --approve: #4ade80;
+      --approve-soft: #123322;
+      --decline: #f87171;
+      --decline-soft: #3a1a1a;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .app {
+    max-width: 640px;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel);
+  }
+  header .title { display: flex; flex-direction: column; gap: 2px; }
+  header h1 { font-size: 16px; margin: 0; }
+  header .sub { font-size: 12px; color: var(--muted); }
+  .badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  #log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .row { display: flex; gap: 8px; align-items: flex-end; }
+  .row.user { justify-content: flex-end; }
+  .avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .bubble {
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    line-height: 1.45;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .row.bot .bubble { background: var(--bot-bubble); border-bottom-left-radius: 4px; }
+  .row.user .bubble { background: var(--user-bubble); color: var(--user-text); border-bottom-right-radius: 4px; }
+  .row.error .bubble { background: var(--decline-soft); color: var(--decline); border-bottom-left-radius: 4px; }
+  .typing .bubble { display: flex; gap: 4px; padding: 14px; }
+  .typing span {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--muted);
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.15s; }
+  .typing span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 2px 0 4px 34px; }
+  .chip {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  .chip:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .chip:disabled { opacity: .5; cursor: default; }
+
+  .result-card {
+    border-radius: var(--radius);
+    padding: 16px;
+    max-width: 90%;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .result-card.APPROVED { background: var(--approve-soft); }
+  .result-card.DECLINED { background: var(--decline-soft); }
+  .result-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .decision-pill {
+    font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 999px; color: #fff;
+  }
+  .decision-pill.APPROVED { background: var(--approve); }
+  .decision-pill.DECLINED { background: var(--decline); }
+  .result-metrics { font-size: 12px; color: var(--muted); }
+  .result-card .explain { font-size: 14px; margin: 10px 0; white-space: pre-wrap; }
+  .result-card h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 12px 0 6px; }
+  .result-card ul { margin: 0; padding-left: 18px; font-size: 13px; }
+  .result-card li { margin-bottom: 4px; }
+  .footer-note { font-size: 11px; color: var(--muted); margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px; }
+
+  #composer {
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  #composer input {
+    flex: 1;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 11px 16px;
+    font-size: 14px;
+    outline: none;
+  }
+  #composer input:focus { border-color: var(--accent); }
+  #composer button {
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  #composer button:disabled { opacity: .4; cursor: default; }
+  #composer button.restart { background: transparent; color: var(--muted); border: 1px solid var(--border); width: auto; padding: 0 14px; border-radius: 999px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="title">
+      <h1>ABC Credit — Loan Assistant</h1>
+      <div class="sub" id="modelSub">two-wheeler loan application</div>
+    </div>
+    <div class="badge" id="layerBadge">connecting…</div>
+  </header>
+  <div id="log"></div>
+  <div id="composer">
+    <button class="restart" id="restartBtn" title="Start over">Restart</button>
+    <input id="textInput" type="text" placeholder="Type your answer…" autocomplete="off">
+    <button id="sendBtn" title="Send">➤</button>
+  </div>
+</div>
+
+<script>
+const API = "";              // same-origin
+const state = { steps: [], idx: 0, answers: {}, popularVehicles: [], sessionId: null, done: false, busy: false };
+
+const log = document.getElementById("log");
+const input = document.getElementById("textInput");
+const sendBtn = document.getElementById("sendBtn");
+const restartBtn = document.getElementById("restartBtn");
+const layerBadge = document.getElementById("layerBadge");
+
+function scrollBottom() { log.scrollTop = log.scrollHeight; }
+
+function addBot(text) {
+  const row = document.createElement("div");
+  row.className = "row bot";
+  row.innerHTML = `<div class="avatar">AI</div><div class="bubble"></div>`;
+  row.querySelector(".bubble").textContent = text;
+  log.appendChild(row);
+  scrollBottom();
+  return row;
+}
+function addError(text) {
+  const row = document.createElement("div");
+  row.className = "row bot error";
+  row.innerHTML = `<div class="avatar">!</div><div class="bubble"></div>`;
+  row.querySelector(".bubble").textContent = text;
+  log.appendChild(row);
+  scrollBottom();
+}
+function addUser(text) {
+  const row = document.createElement("div");
+  row.className = "row user";
+  row.innerHTML = `<div class="bubble"></div>`;
+  row.querySelector(".bubble").textContent = text;
+  log.appendChild(row);
+  scrollBottom();
+}
+function addTyping() {
+  const row = document.createElement("div");
+  row.className = "row bot typing";
+  row.innerHTML = `<div class="avatar">AI</div><div class="bubble"><span></span><span></span><span></span></div>`;
+  log.appendChild(row);
+  scrollBottom();
+  return row;
+}
+function addChips(options, onPick) {
+  const wrap = document.createElement("div");
+  wrap.className = "chips";
+  options.forEach(opt => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = opt;
+    b.onclick = () => { if (!state.busy) { disableChips(wrap); onPick(opt); } };
+    wrap.appendChild(b);
+  });
+  log.appendChild(wrap);
+  scrollBottom();
+  return wrap;
+}
+function disableChips(wrap) {
+  wrap.querySelectorAll(".chip").forEach(c => c.disabled = true);
+}
+
+async function api(path, opts) {
+  const res = await fetch(API + path, opts);
+  if (!res.ok) {
+    let detail = res.statusText;
+    try { detail = (await res.json()).detail || detail; } catch (e) {}
+    throw new Error(detail);
+  }
+  return res.json();
+}
+
+async function init() {
+  try {
+    const health = await api("/health");
+    layerBadge.textContent = health.interaction_layer === "claude-haiku-4-5" ? "Claude Haiku 4.5" : "Offline mode";
+    document.getElementById("modelSub").textContent =
+      `${health.model} · decision by ML model only`;
+  } catch (e) {
+    layerBadge.textContent = "offline";
+  }
+  try {
+    const veh = await api("/vehicles");
+    state.popularVehicles = veh.popular.slice(0, 8);
+  } catch (e) {}
+  try {
+    const flow = await api("/flow");
+    state.steps = flow.steps;
+  } catch (e) {
+    addError("Could not load the question flow from the server. Is the API running?");
+    return;
+  }
+  state.sessionId = "WEB" + Date.now();
+  addBot("Hi! I'm the ABC Credit loan assistant. I'll ask a few quick questions, then our ML model will make an instant decision. Let's get started.");
+  askStep();
+}
+
+function currentStep() { return state.steps[state.idx]; }
+
+function askStep() {
+  if (state.idx >= state.steps.length) { return finish(); }
+  const step = currentStep();
+  addBot(step.prompt + (step.essential ? "" : "  (optional — you can skip)"));
+  if (step.key === "vehicle" && state.popularVehicles.length) {
+    addChips(state.popularVehicles, (val) => submitAnswer(val));
+  } else if (step.choices && step.choices.length) {
+    addChips(step.choices, (val) => submitAnswer(val));
+  } else if (step.kind === "yesno") {
+    addChips(["yes", "no"], (val) => submitAnswer(val));
+  }
+  input.focus();
+}
+
+async function submitAnswer(raw) {
+  const step = currentStep();
+  if (raw.trim() === "" && !step.essential) {
+    // explicit skip on optional field
+    state.idx += 1;
+    askStep();
+    return;
+  }
+  addUser(raw || "(skipped)");
+  state.busy = true;
+  setComposerEnabled(false);
+  const typingRow = addTyping();
+  try {
+    const res = await api("/answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key: step.key, text: raw }),
+    });
+    typingRow.remove();
+    if (res.error) {
+      addError(res.error);
+    } else {
+      if (res.value !== null && res.value !== undefined && String(res.value).trim() !== "") {
+        state.answers[step.key] = raw;
+      }
+      state.idx += 1;
+    }
+  } catch (e) {
+    typingRow.remove();
+    addError("Something went wrong validating that answer: " + e.message);
+  } finally {
+    state.busy = false;
+    setComposerEnabled(true);
+    askStep();
+  }
+}
+
+async function finish() {
+  setComposerEnabled(false);
+  const typingRow = addTyping();
+  try {
+    const result = await api("/application", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answers: state.answers, session_id: state.sessionId }),
+    });
+    typingRow.remove();
+    renderResult(result);
+  } catch (e) {
+    typingRow.remove();
+    addError("Could not reach a decision: " + e.message);
+    setComposerEnabled(false);
+  }
+  state.done = true;
+}
+
+function renderResult(r) {
+  const row = document.createElement("div");
+  row.className = "row bot";
+  const pdTxt = r.calibrated_pd != null ? `${(r.calibrated_pd * 100).toFixed(1)}%` : "n/a";
+  const confTxt = r.confidence != null ? `${(r.confidence * 100).toFixed(0)}%` : "n/a";
+  const reasons = (r.reason_codes || []).map(rc =>
+    `<li><strong>${rc.code}</strong> — ${rc.reason} (${rc.direction})</li>`).join("");
+  const steps = (r.next_steps || []).map(s => `<li>${s}</li>`).join("");
+  row.innerHTML = `
+    <div class="avatar">AI</div>
+    <div class="result-card ${r.decision}">
+      <div class="result-head">
+        <span class="decision-pill ${r.decision}">${r.decision}</span>
+        <span class="result-metrics">calibrated PD ${pdTxt} · confidence ${confTxt}</span>
+      </div>
+      <div class="explain"></div>
+      ${reasons ? `<h4>Key factors</h4><ul>${reasons}</ul>` : ""}
+      ${steps ? `<h4>Next steps</h4><ul>${steps}</ul>` : ""}
+      <div class="footer-note">Decision computed by the trained ML model (not the LLM) · interaction layer: ${r.llm_mode || "n/a"} · logged as ${r.logged_as || "n/a"}</div>
+    </div>`;
+  row.querySelector(".explain").textContent = r.explanation || "";
+  log.appendChild(row);
+  scrollBottom();
+}
+
+function setComposerEnabled(on) {
+  input.disabled = !on || state.done;
+  sendBtn.disabled = !on || state.done;
+}
+
+sendBtn.onclick = () => {
+  if (state.busy || state.done) return;
+  const val = input.value;
+  input.value = "";
+  submitAnswer(val);
+};
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendBtn.onclick();
+});
+restartBtn.onclick = () => {
+  state.idx = 0; state.answers = {}; state.done = false; state.busy = false;
+  state.sessionId = "WEB" + Date.now();
+  log.innerHTML = "";
+  setComposerEnabled(true);
+  addBot("Let's start over.");
+  askStep();
+};
+
+init();
+</script>
+</body>
+</html>

@@ -25,10 +25,11 @@ Run:  ABC_API_KEY=secret .venv/bin/python -m uvicorn api:app --host 0.0.0.0 --po
 """
 from __future__ import annotations
 import os, sys, json, time, threading
+from pathlib import Path
 sys.path.insert(0, "src")
 
 from fastapi import FastAPI, HTTPException, Header, Depends, Request, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel, Field, field_validator
 
 import config as C
@@ -131,6 +132,11 @@ class NormalizeReq(BaseModel):
     text: str = Field(..., max_length=512)
 
 
+class AnswerReq(BaseModel):
+    key: str = Field(..., max_length=64)
+    text: str = Field(default="", max_length=512)
+
+
 # ---- public endpoints ------------------------------------------------------ #
 @app.get("/health")
 def health():
@@ -148,6 +154,16 @@ def health():
 def vehicles():
     veh = json.loads((C.ARTIFACT_DIR / "vehicle_catalog.json").read_text())
     return {"popular": veh["popular"], "count": len(veh["catalog"])}
+
+
+@app.get("/flow")
+def flow():
+    """The chatbot's question sequence (key, prompt, kind, choices, essential) —
+    lets a UI client drive the same conversation chatbot_llm.py runs in the terminal."""
+    return {"steps": [
+        {"key": key, "prompt": prompt, "kind": kind, "choices": choices, "essential": essential}
+        for key, prompt, kind, choices, essential in chatbot_llm.STEPS
+    ]}
 
 
 # ---- protected endpoints --------------------------------------------------- #
@@ -168,6 +184,20 @@ def normalize(req: NormalizeReq):
             "mode": "claude-haiku-4-5" if llm_client.online() else "offline-deterministic"}
 
 
+@app.post("/answer", dependencies=PROTECTED)
+def answer(req: AnswerReq):
+    """Validate/normalise one chatbot step's raw answer (same logic as the terminal
+    chatbot's per-question loop) so a UI can give immediate inline feedback."""
+    step = next((s for s in chatbot_llm.STEPS if s[0] == req.key), None)
+    if step is None:
+        raise HTTPException(status_code=400, detail=f"Unknown step key '{req.key}'")
+    _, _, _, _, essential = step
+    value, error = chatbot_llm._collect_value(step, req.text)
+    if value is None and essential and not error:
+        error = "This field is required to make a decision."
+    return {"key": req.key, "value": value, "error": error}
+
+
 @app.post("/application", dependencies=PROTECTED)
 def application(req: Answers):
     try:
@@ -178,7 +208,17 @@ def application(req: Answers):
         raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {e}")
 
 
+_CHAT_HTML = Path(__file__).resolve().parent / "web" / "chat.html"
+
+
+@app.get("/chat")
+def chat_ui():
+    """Browser-based chat UI for the loan assistant (static file, same-origin API calls)."""
+    return FileResponse(_CHAT_HTML, media_type="text/html")
+
+
 @app.get("/")
 def root():
     return {"service": "ABC Credit Loan API",
-            "endpoints": ["/health", "/vehicles", "/decision", "/normalize", "/application"]}
+            "endpoints": ["/health", "/vehicles", "/flow", "/decision", "/normalize",
+                          "/answer", "/application", "/chat"]}
