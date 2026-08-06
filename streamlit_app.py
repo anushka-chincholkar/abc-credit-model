@@ -29,6 +29,18 @@ if _env_path.exists():
         os.environ.setdefault(k.strip(), v.strip())
 
 import streamlit as st
+
+# On Streamlit Community Cloud, secrets are configured in the app dashboard
+# (Settings -> Secrets, TOML format) rather than a committed .env. Mirror them
+# into os.environ so llm_client.py's plain os.environ.get() calls see them the
+# same way they would locally -- regardless of the exact platform's own
+# env-var-sync behaviour, this makes it explicit and dependable.
+try:
+    for k, v in st.secrets.items():
+        os.environ.setdefault(k, str(v))
+except Exception:
+    pass  # no secrets.toml / dashboard secrets configured -- fine locally
+
 import chat_agent as agent
 import llm_client
 
