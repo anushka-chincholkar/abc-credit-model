@@ -1,0 +1,568 @@
+{
+  "catalog": {
+    "APACHE 200 4V 1CH - R MODE BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "RTR 200CC",
+      "Product_Code": "MC",
+      "count": 5
+    },
+    "APACHE 200 4V 2CH - R MODE BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "RTR 200CC",
+      "Product_Code": "MC",
+      "count": 144
+    },
+    "APACHE RR 310 BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "APACHE RR 310",
+      "Product_Code": "MC",
+      "count": 27
+    },
+    "APACHE RTR 160 2V BSVI DISC": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DISC",
+      "Product_Code": "MC",
+      "count": 96
+    },
+    "APACHE RTR 160 2V BSVI DRUM": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DRUM",
+      "Product_Code": "MC",
+      "count": 45
+    },
+    "APACHE RTR 160 2V RM DISC BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DISC",
+      "Product_Code": "MC",
+      "count": 8866
+    },
+    "APACHE RTR 160 2V RM DISC BT BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DISC",
+      "Product_Code": "MC",
+      "count": 3850
+    },
+    "APACHE RTR 160 2V RM DRUM BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DRUM",
+      "Product_Code": "MC",
+      "count": 3255
+    },
+    "APACHE RTR 160 4V BSVI DISC": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DISC",
+      "Product_Code": "MC",
+      "count": 17
+    },
+    "APACHE RTR 160 4V BSVI DRUM": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DRUM",
+      "Product_Code": "MC",
+      "count": 2
+    },
+    "APACHE RTR 160 4V DISC BT BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DISC",
+      "Product_Code": "MC",
+      "count": 241
+    },
+    "APACHE RTR 165 RP BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "165 CC",
+      "Product_Code": "MC",
+      "count": 1
+    },
+    "APACHE RTR 180 BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "APACHE 180 CC",
+      "Product_Code": "MC",
+      "count": 5
+    },
+    "APACHE RTR 180 RM BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "APACHE 180 CC",
+      "Product_Code": "MC",
+      "count": 351
+    },
+    "APACHE RTR 200 4V BSVI 1CH ABS": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "RTR 200CC",
+      "Product_Code": "MC",
+      "count": 1
+    },
+    "APACHE RTR 200 4V BSVI 2CH ABS": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "RTR 200CC",
+      "Product_Code": "MC",
+      "count": 50
+    },
+    "APACHE RTR 310 BSVI BASE BLK": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "APACHE RTR 310",
+      "Product_Code": "MC",
+      "count": 13
+    },
+    "APACHE RTR 310 BSVI BASE BLK- U400": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "APACHE RTR 310",
+      "Product_Code": "MC",
+      "count": 4
+    },
+    "APACHE RTR 310 BSVI BASE YEL": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "APACHE RTR 310",
+      "Product_Code": "MC",
+      "count": 14
+    },
+    "IQUBE EV": {
+      "Make_Code": "TVS",
+      "Model_Variant": "EBIKE",
+      "Product_Code": "EB",
+      "count": 42
+    },
+    "JUPITER 125 BSVI - DISC": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "125 CC DISC",
+      "Product_Code": "SC",
+      "count": 4851
+    },
+    "JUPITER 125 BSVI DISC SXC U566": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "125CC DISC",
+      "Product_Code": "SC",
+      "count": 3336
+    },
+    "JUPITER 125 DRUM BSVI - ALLOY WHEEL": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "125 CC DRUM",
+      "Product_Code": "SC",
+      "count": 1594
+    },
+    "JUPITER 125 DRUM BSVI - SMW": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "125 CC DRUM",
+      "Product_Code": "SC",
+      "count": 50
+    },
+    "JUPITER BSVI - AOL": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 4237
+    },
+    "JUPITER BSVI - SMW": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 1699
+    },
+    "JUPITER BSVI BASIC": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 52
+    },
+    "JUPITER CLASSIC BSVI": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 23
+    },
+    "JUPITER ZX BSVI - AOL - DRUM": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 2580
+    },
+    "JUPITER ZX BSVI \u00e2\u20ac\u201c ZX DRUM": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 103
+    },
+    "JUPITER ZX DISC - BSVI - ISS": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 62
+    },
+    "JUPITER ZX DISC - SXC BSVI": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 1175
+    },
+    "JUPITER ZX DISC BSVI": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 21
+    },
+    "JUPITER ZX DRUM SXC BSVI": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 592
+    },
+    "NTORQ 125 DISC - SUPER SQUAD EDITION BSVI": {
+      "Make_Code": "NTORQ",
+      "Model_Variant": "125 CC",
+      "Product_Code": "SC",
+      "count": 3844
+    },
+    "NTORQ 125 DISC \u00e2\u20ac\u201c RACE EDITION BSVI": {
+      "Make_Code": "NTORQ",
+      "Model_Variant": "125 CC",
+      "Product_Code": "SC",
+      "count": 4370
+    },
+    "NTORQ 125 XT BSVI": {
+      "Make_Code": "NTORQ",
+      "Model_Variant": "125 CC",
+      "Product_Code": "SC",
+      "count": 1516
+    },
+    "SCOOTY PEP PLUS BSVI": {
+      "Make_Code": "SCOOTY",
+      "Model_Variant": "SCOOTY PEP PLUS",
+      "Product_Code": "SC",
+      "count": 2
+    },
+    "SCOOTY PEP PLUS MATTE SERIES - BSVI": {
+      "Make_Code": "SCOOTY",
+      "Model_Variant": "SCOOTY PEP PLUS",
+      "Product_Code": "SC",
+      "count": 7
+    },
+    "SCOOTY ZEST - BSVI": {
+      "Make_Code": "ZEST",
+      "Model_Variant": "SCOOTY",
+      "Product_Code": "SC",
+      "count": 642
+    },
+    "SCOOTY ZEST MATTE SERIES - BSVI": {
+      "Make_Code": "ZEST",
+      "Model_Variant": "SCOOTY",
+      "Product_Code": "SC",
+      "count": 2976
+    },
+    "STARCITY PLUS ES BSVI \u00e2\u20ac\u201c MONO TONE": {
+      "Make_Code": "CITY PLUS",
+      "Model_Variant": "STAR CITY PLUS",
+      "Product_Code": "MC",
+      "count": 41
+    },
+    "STARCITY PLUS ES DISC BSVI": {
+      "Make_Code": "CITY PLUS",
+      "Model_Variant": "STAR CITY PLUS",
+      "Product_Code": "MC",
+      "count": 113
+    },
+    "STARCITY PLUS ES DT BSVI \u00e2\u20ac\u201c DUAL TONE": {
+      "Make_Code": "CITY PLUS",
+      "Model_Variant": "STAR CITY PLUS",
+      "Product_Code": "MC",
+      "count": 513
+    },
+    "TVS APACHE RTR 160 2V RM OBDIIA DRUM BE BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DRUM",
+      "Product_Code": "MC",
+      "count": 3
+    },
+    "TVS APACHE RTR 160 4V - RM DISC BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DISC",
+      "Product_Code": "MC",
+      "count": 364
+    },
+    "TVS APACHE RTR 160 4V - RM DRUM BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DRUM",
+      "Product_Code": "MC",
+      "count": 69
+    },
+    "TVS APACHE RTR 160 4V - RM SPL EDITION BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DISC",
+      "Product_Code": "MC",
+      "count": 2274
+    },
+    "TVS APACHE RTR 160 4V BSVI - U626": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DISC",
+      "Product_Code": "MC",
+      "count": 651
+    },
+    "TVS APACHE RTR 160 4V RM OBDIIA DRUM BE BSVI": {
+      "Make_Code": "APACHE",
+      "Model_Variant": "160 DRUM",
+      "Product_Code": "MC",
+      "count": 1
+    },
+    "TVS IQUBE 09": {
+      "Make_Code": "TVS",
+      "Model_Variant": "EBIKE",
+      "Product_Code": "EB",
+      "count": 14
+    },
+    "TVS IQUBE L43": {
+      "Make_Code": "TVS",
+      "Model_Variant": "EBIKE",
+      "Product_Code": "EB",
+      "count": 66
+    },
+    "TVS IQUBE S": {
+      "Make_Code": "TVS",
+      "Model_Variant": "EBIKE",
+      "Product_Code": "EB",
+      "count": 1268
+    },
+    "TVS IQUBE S C45": {
+      "Make_Code": "TVS",
+      "Model_Variant": "EBIKE",
+      "Product_Code": "EB",
+      "count": 30
+    },
+    "TVS IQUBE ST 2P": {
+      "Make_Code": "TVS",
+      "Model_Variant": "EBIKE",
+      "Product_Code": "EB",
+      "count": 2
+    },
+    "TVS IQUBE UG": {
+      "Make_Code": "TVS",
+      "Model_Variant": "EBIKE",
+      "Product_Code": "EB",
+      "count": 2030
+    },
+    "TVS JUPITER CLASSIC DISC BSVI": {
+      "Make_Code": "JUPITER",
+      "Model_Variant": "110 CC",
+      "Product_Code": "SC",
+      "count": 671
+    },
+    "TVS NTORQ 125 DISC BSVI": {
+      "Make_Code": "NTORQ",
+      "Model_Variant": "125 CC",
+      "Product_Code": "SC",
+      "count": 98
+    },
+    "TVS NTORQ 125 RACE XP BSVI": {
+      "Make_Code": "NTORQ",
+      "Model_Variant": "125 CC",
+      "Product_Code": "SC",
+      "count": 2314
+    },
+    "TVS RADEON 110 DUAL TONE BSVI": {
+      "Make_Code": "RADEON",
+      "Model_Variant": "RADEON",
+      "Product_Code": "MC",
+      "count": 67
+    },
+    "TVS RADEON 110 ES MAG BSVI": {
+      "Make_Code": "RADEON",
+      "Model_Variant": "RADEON",
+      "Product_Code": "MC",
+      "count": 3082
+    },
+    "TVS RADEON 110 ES MAG REF BSVI": {
+      "Make_Code": "RADEON",
+      "Model_Variant": "RADEON",
+      "Product_Code": "MC",
+      "count": 449
+    },
+    "TVS RADEON BSVI DIGI DISC DUAL TONE": {
+      "Make_Code": "RADEON",
+      "Model_Variant": "RADEON",
+      "Product_Code": "MC",
+      "count": 613
+    },
+    "TVS RADEON BSVI DIGI DRUM DUAL TONE": {
+      "Make_Code": "RADEON",
+      "Model_Variant": "RADEON",
+      "Product_Code": "MC",
+      "count": 781
+    },
+    "TVS RADEON BSVI DIGI DRUM ISG": {
+      "Make_Code": "RADEON",
+      "Model_Variant": "RADEON",
+      "Product_Code": "MC",
+      "count": 75
+    },
+    "TVS RADEON BSVI DISC DUAL TONE": {
+      "Make_Code": "RADEON",
+      "Model_Variant": "RADEON",
+      "Product_Code": "MC",
+      "count": 54
+    },
+    "TVS RADEON DISC BSVI": {
+      "Make_Code": "RADEON",
+      "Model_Variant": "RADEON",
+      "Product_Code": "MC",
+      "count": 31
+    },
+    "TVS RAIDER DISC BSVI": {
+      "Make_Code": "RAIDER",
+      "Model_Variant": "RAIDER",
+      "Product_Code": "MC",
+      "count": 12180
+    },
+    "TVS RAIDER DISC CONNECTED BSVI": {
+      "Make_Code": "RAIDER",
+      "Model_Variant": "RAIDER",
+      "Product_Code": "MC",
+      "count": 1889
+    },
+    "TVS RAIDER DISC SS BSVI": {
+      "Make_Code": "RAIDER",
+      "Model_Variant": "RAIDER",
+      "Product_Code": "MC",
+      "count": 1601
+    },
+    "TVS RAIDER DISC SSE BSVI": {
+      "Make_Code": "RAIDER",
+      "Model_Variant": "RAIDER",
+      "Product_Code": "MC",
+      "count": 3099
+    },
+    "TVS RAIDER DRUM BSVI": {
+      "Make_Code": "RAIDER",
+      "Model_Variant": "RAIDER",
+      "Product_Code": "MC",
+      "count": 1
+    },
+    "TVS RONIN 1CH BASE BSVI": {
+      "Make_Code": "RONIN",
+      "Model_Variant": "RONIN",
+      "Product_Code": "MC",
+      "count": 198
+    },
+    "TVS RONIN 1CH BASE PLUS BSVI": {
+      "Make_Code": "RONIN",
+      "Model_Variant": "RONIN",
+      "Product_Code": "MC",
+      "count": 60
+    },
+    "TVS RONIN 2CH MID BSVI": {
+      "Make_Code": "RONIN",
+      "Model_Variant": "RONIN",
+      "Product_Code": "MC",
+      "count": 108
+    },
+    "TVS RONIN 2CH MID NG REFRESH BSVI": {
+      "Make_Code": "RONIN",
+      "Model_Variant": "RONIN",
+      "Product_Code": "MC",
+      "count": 81
+    },
+    "TVS RONIN 2CH MID SPL BSVI": {
+      "Make_Code": "RONIN",
+      "Model_Variant": "RONIN",
+      "Product_Code": "MC",
+      "count": 165
+    },
+    "TVS SPORT DURALIFE KS SWL BSVI": {
+      "Make_Code": "SPORT",
+      "Model_Variant": "SPORT",
+      "Product_Code": "MC",
+      "count": 1
+    },
+    "TVS SPORT ELS BSVI": {
+      "Make_Code": "SPORT",
+      "Model_Variant": "SPORT",
+      "Product_Code": "MC",
+      "count": 1106
+    },
+    "TVS SPORT ES BSVI - U559": {
+      "Make_Code": "SPORT",
+      "Model_Variant": "SPORT",
+      "Product_Code": "MC",
+      "count": 4965
+    },
+    "TVS SPORT KLS BSVI": {
+      "Make_Code": "SPORT",
+      "Model_Variant": "SPORT",
+      "Product_Code": "MC",
+      "count": 42
+    },
+    "TVS XL 100 COM ITS BSVI": {
+      "Make_Code": "MOPEDS",
+      "Model_Variant": "XL 100CC",
+      "Product_Code": "MO",
+      "count": 1028
+    },
+    "TVS XL 100 COM KS BSVI": {
+      "Make_Code": "MOPEDS",
+      "Model_Variant": "XL 100CC",
+      "Product_Code": "MO",
+      "count": 60
+    },
+    "TVS XL 100 HD ITS BSVI": {
+      "Make_Code": "MOPEDS",
+      "Model_Variant": "XL 100CC",
+      "Product_Code": "MO",
+      "count": 8699
+    },
+    "TVS XL 100 HD ITS BSVI - WINNER EDITION": {
+      "Make_Code": "MOPEDS",
+      "Model_Variant": "XL 100CC",
+      "Product_Code": "MO",
+      "count": 3494
+    },
+    "TVS XL 100 HD ITS SPL EDITION BSVI": {
+      "Make_Code": "MOPEDS",
+      "Model_Variant": "XL 100CC",
+      "Product_Code": "MO",
+      "count": 142
+    },
+    "TVS XL 100 HD KS BSVI": {
+      "Make_Code": "MOPEDS",
+      "Model_Variant": "XL 100CC",
+      "Product_Code": "MO",
+      "count": 3052
+    }
+  },
+  "popular": [
+    "TVS RAIDER DISC BSVI",
+    "APACHE RTR 160 2V RM DISC BSVI",
+    "TVS XL 100 HD ITS BSVI",
+    "TVS SPORT ES BSVI - U559",
+    "JUPITER 125 BSVI - DISC",
+    "NTORQ 125 DISC \u00e2\u20ac\u201c RACE EDITION BSVI",
+    "JUPITER BSVI - AOL",
+    "APACHE RTR 160 2V RM DISC BT BSVI",
+    "NTORQ 125 DISC - SUPER SQUAD EDITION BSVI",
+    "TVS XL 100 HD ITS BSVI - WINNER EDITION",
+    "JUPITER 125 BSVI DISC SXC U566",
+    "APACHE RTR 160 2V RM DRUM BSVI",
+    "TVS RAIDER DISC SSE BSVI",
+    "TVS RADEON 110 ES MAG BSVI",
+    "TVS XL 100 HD KS BSVI",
+    "SCOOTY ZEST MATTE SERIES - BSVI",
+    "JUPITER ZX BSVI - AOL - DRUM",
+    "TVS NTORQ 125 RACE XP BSVI",
+    "TVS APACHE RTR 160 4V - RM SPL EDITION BSVI",
+    "TVS IQUBE UG",
+    "TVS RAIDER DISC CONNECTED BSVI",
+    "JUPITER BSVI - SMW",
+    "TVS RAIDER DISC SS BSVI",
+    "JUPITER 125 DRUM BSVI - ALLOY WHEEL",
+    "NTORQ 125 XT BSVI",
+    "TVS IQUBE S",
+    "JUPITER ZX DISC - SXC BSVI",
+    "TVS SPORT ELS BSVI",
+    "TVS XL 100 COM ITS BSVI",
+    "TVS RADEON BSVI DIGI DRUM DUAL TONE",
+    "TVS JUPITER CLASSIC DISC BSVI",
+    "TVS APACHE RTR 160 4V BSVI - U626",
+    "SCOOTY ZEST - BSVI",
+    "TVS RADEON BSVI DIGI DISC DUAL TONE",
+    "JUPITER ZX DRUM SXC BSVI",
+    "STARCITY PLUS ES DT BSVI \u00e2\u20ac\u201c DUAL TONE",
+    "TVS RADEON 110 ES MAG REF BSVI",
+    "TVS APACHE RTR 160 4V - RM DISC BSVI",
+    "APACHE RTR 180 RM BSVI",
+    "APACHE RTR 160 4V DISC BT BSVI"
+  ]
+}
