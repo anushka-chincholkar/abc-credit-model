@@ -1,0 +1,41 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Virtual environment
+.venv/
+venv/
+
+# Env / secrets
+.env
+.env.*
+*.pem
+
+# Data (raw training data / PII — not for GitHub)
+data/
+
+# Generated model artifacts (rebuild via 04_final_eval.py / 08_calibrate.py / build_assets.py)
+artifacts/
+
+# Logs (incl. PII-masked chatbot application log)
+logs/
+*.log
+
+# Generated reports/figures (rebuild via the numbered pipeline scripts)
+reports/figures/
+reports/*.csv
+reports/*.json
+reports/profile.txt
+
+# Generated notebook exports (rebuild via build_notebook.py)
+ABC_Credit_Analysis.ipynb
+ABC_Credit_Analysis.html

@@ -1,0 +1,14 @@
+.venv/
+data/training_data.csv
+logs/
+reports/figures/
+tests/
+__pycache__/
+**/__pycache__/
+*.pyc
+.git/
+.gitignore
+*.log
+run_*.sh
+0*_*.py
+1*_*.py
