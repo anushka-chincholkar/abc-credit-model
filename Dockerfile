@@ -18,6 +18,7 @@ COPY api.py build_assets.py ./
 COPY artifacts/ ./artifacts/
 
 EXPOSE 8000
+ENV PORT=8000
 
 # Non-root user
 RUN useradd -m appuser && chown -R appuser /app
@@ -25,7 +26,9 @@ USER appuser
 
 # Set ABC_API_KEY (auth) and optionally ANTHROPIC_API_KEY (LLM layer) at runtime, e.g.
 #   docker run -e ABC_API_KEY=... -e ANTHROPIC_API_KEY=... -p 8000:8000 abc-credit-api
+# Binds to $PORT (falls back to 8000) so the same image works locally and on
+# PaaS hosts like Render/Railway/Heroku that inject their own port at runtime.
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-    CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else 1)"
+    CMD python -c "import os,urllib.request,sys; p=os.environ.get('PORT','8000'); sys.exit(0 if urllib.request.urlopen(f'http://127.0.0.1:{p}/health').status==200 else 1)"
 
-CMD ["python", "-m", "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "python -m uvicorn api:app --host 0.0.0.0 --port ${PORT:-8000}"]

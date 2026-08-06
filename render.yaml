@@ -1,0 +1,21 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploys api.py (FastAPI service + browser chat UI) from the existing Dockerfile.
+# In the Render dashboard: New -> Blueprint -> select this repo -> it reads this
+# file automatically. ABC_API_KEY and ANTHROPIC_API_KEY are marked sync:false so
+# Render prompts for them in the dashboard rather than needing real values here.
+services:
+  - type: web
+    name: abc-credit-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ABC_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: RATE_LIMIT_PER_MIN
+        value: "60"
+      - key: MAX_BODY_BYTES
+        value: "65536"
