@@ -90,3 +90,8 @@ LTV_MIN, LTV_MAX = 0.0, 100.0  # a loan-to-value ratio above 100% is implausible
 N_SPLITS = 5
 TEST_SIZE = 0.15
 VAL_SIZE = 0.15  # of the remaining after test is carved out
+
+# Business policy: financing above this % of vehicle value requires more
+# borrower equity than we advise; flagged for the applicant, never blocks
+# the application or the model call.
+LTV_POLICY_CAP = 95.0
