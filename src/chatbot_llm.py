@@ -45,7 +45,7 @@ def _tier_for(pincode: str):
 # Conversation flow — high-signal fields first. `kind` drives validation; `derive`
 # marks steps that fill several model fields. Order = what the applicant is asked.
 STEPS = [
-    ("vehicle",       "Which two-wheeler are you financing? (name or number from the list)", "vehicle", None, True),
+    ("vehicle", "Which two-wheeler are you financing?", "vehicle", None, True),
     ("vehicle_price", "What is the on-road price of the vehicle (₹)?", "int", None, True),
     ("Loan_Amount",   "How much loan do you need (₹)?", "int", None, True),
     ("Pincode",       "Your 6-digit residential pincode?", "pincode", None, True),
@@ -60,58 +60,71 @@ STEPS = [
     ("Resident_Type", "Residence? (O owned / R rented / L leased) — optional", "cat", ["O", "R", "L"], False),
 ]
 
+import difflib
 
-def _match_vehicle(text: str, return_confidence: bool = False):
-    """Map free text / index to a catalog Model_Description (offline-safe).
+# Below this similarity, we no longer trust the match — treat the vehicle as
+# genuinely new/unknown rather than forcing it into a catalogue entry.
+_VEHICLE_FUZZY_CUTOFF = 0.6
 
-    With return_confidence=True, also reports whether the match is unambiguous
-    (an exact name, a numbered pick, or a substring that identifies exactly one
-    catalog entry) vs a best-guess (a substring/word shared by several entries,
-    e.g. "apache" matching many APACHE variants, or the loose whole-word
-    fallback) -- callers that want to confirm ambiguous guesses with the user
-    (see src/chat_agent.py) use this instead of silently trusting any hit."""
-    def _out(match, confident):
-        return (match, confident) if return_confidence else match
 
+def _match_vehicle(text: str) -> str | None:
+    """Best-effort map of free text / index to a catalog Model_Description.
+    Returns None when nothing in the catalogue is a close enough match —
+    the caller then keeps the applicant's own wording instead of blocking."""
     veh = _assets()["veh"]; popular = veh["popular"]; catalog = veh["catalog"]
     t = (text or "").strip()
-    if t.isdigit():  # picked a number from the list
+    if not t:
+        return None
+    if t.isdigit():
         i = int(t) - 1
-        m = popular[i] if 0 <= i < len(popular) else None
-        return _out(m, m is not None)
+        return popular[i] if 0 <= i < len(popular) else None
     up = t.upper()
-    for name in catalog:  # exact match
+    for name in catalog:                          # exact match
         if up == name.upper():
-            return _out(name, True)
-    hits = [name for name in catalog if up and up in name.upper()]
+            return name
+    hits = [name for name in catalog if up in name.upper()]   # substring
+    if not hits:
+        hits = [name for name in catalog
+                if any(w in name.upper() for w in up.split() if len(w) > 2)]
     if hits:
-        m = max(hits, key=lambda n: catalog[n]["count"])
-        return _out(m, len(hits) == 1)  # unambiguous only if the substring is unique
-    # Whole-word match on words of len >= 3 only -- short/common words (e.g. "a", "I",
-    # "the") are near-universal substrings of catalog names and would false-positive-match
-    # almost any free text (e.g. "I want a loan") to some vehicle. This tier is always a
-    # best-guess (never "confident") since a bare word can plausibly mean several vehicles.
-    words = [w for w in re.findall(r"[A-Z0-9]+", up) if len(w) >= 3]
-    hits = [name for name in catalog
-            if any(re.search(rf"\b{re.escape(w)}\b", name.upper()) for w in words)]
-    m = max(hits, key=lambda n: catalog[n]["count"]) if hits else None
-    return _out(m, False)
+        return max(hits, key=lambda n: catalog[n]["count"])
+    close = difflib.get_close_matches(                        # fuzzy fallback
+        up, [n.upper() for n in catalog], n=1, cutoff=_VEHICLE_FUZZY_CUTOFF)
+    if close:
+        for name in catalog:
+            if name.upper() == close[0]:
+                return name
+    return None  # no close match -> genuinely new/unrecognised model
 
+
+def _guess_product_code(desc: str) -> str:
+    """Coarse fallback Product_Code for a model with no catalogue match."""
+    t = (desc or "").upper()
+    if any(k in t for k in ("EBIKE", "ELECTRIC", "IQUBE", " EV")):
+        return "EB"
+    if any(k in t for k in ("SCOOT", "SCOOTY", "ACTIVA", "JUPITER")):
+        return "SC"
+    if "MOPED" in t:
+        return "MO"
+    return "MC"
 
 def _collect_value(step, raw_text):
     """Normalise (LLM or offline) then validate. Returns (value, error)."""
     key, prompt, kind, choices, _ = step
     if kind == "vehicle":
-        match = _match_vehicle(raw_text if not llm_client.online()
-                               else (llm_client.normalize_answer(
-                                   "vehicle", "vehicle",
-                                   _assets()["veh"]["popular"], prompt, raw_text) or raw_text))
-        # LLM may return a description; re-match to a real catalog key
-        match = _match_vehicle(match) or _match_vehicle(raw_text)
-        return (match, None if match else "I couldn't match that to a vehicle in our catalogue.")
+        norm = raw_text
+        if llm_client.online():
+            norm = llm_client.normalize_answer(
+                "vehicle", "vehicle", _assets()["veh"]["popular"], prompt, raw_text) or raw_text
+        match = _match_vehicle(norm) or _match_vehicle(raw_text)
+        if match:
+            return match, None
+        # Not close to anything in the catalogue -> keep it as a new model
+        # rather than blocking. Prediction is never gated on a catalog hit.
+        cleaned = (norm or raw_text).strip()
+        return (cleaned or None), (None if cleaned else "Which vehicle are you financing?")
     norm = llm_client.normalize_answer(key, kind, choices, prompt, raw_text)
     return _validate(key, kind, choices, norm if norm is not None else "")
-
 
 def _assemble(collected: dict) -> dict:
     """Derive the full 15-field applicant record from the collected answers."""
@@ -123,12 +136,21 @@ def _assemble(collected: dict) -> dict:
         a["Make_Code"] = veh[desc]["Make_Code"]
         a["Model_Variant"] = veh[desc]["Model_Variant"]
         a["Product_Code"] = veh[desc]["Product_Code"]
+    elif desc:
+        # Genuinely new / unrecognised model — keep the applicant's own text.
+        # pipeline.py's OneHotEncoder(handle_unknown="infrequent_if_exist") and
+        # TargetEncoder are unseen-safe, so the prediction call proceeds
+        # normally without ever needing a catalogue match.
+        a["Model_Description"] = desc
+        a["Make_Code"] = (desc.split()[0].upper() if desc.split() else "OTHER")
+        a["Model_Variant"] = desc
+        a["Product_Code"] = _guess_product_code(desc)
     a["Loan_Amount"] = collected.get("Loan_Amount")
     price = collected.get("vehicle_price")
-    if price and a.get("Loan_Amount") and price > 0:      # derive LTV
+    if price and a.get("Loan_Amount") and price > 0:
         a["LTV"] = round(100.0 * a["Loan_Amount"] / price, 2)
     a["Pincode"] = collected.get("Pincode")
-    if a.get("Pincode"):                                   # derive tier (exact -> region -> default)
+    if a.get("Pincode"):
         a["Final_Tier"] = _tier_for(a["Pincode"])
     for f in ["Employment_Type", "Net_salary", "PAST_LOANS_ACTIVE", "Age",
               "Gender", "Qualifications", "Resident_Type"]:
