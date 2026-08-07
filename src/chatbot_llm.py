@@ -168,6 +168,14 @@ def _template_explanation(result: dict) -> str:
                      + "; ".join(f"{r['reason']} ({r['direction']})" for r in result["reason_codes"][:3]) + ".")
     return "\n".join(lines)
 
+def _ltv_policy_flag(applicant: dict) -> str | None:
+    ltv = applicant.get("LTV")
+    if ltv is not None and ltv > C.LTV_POLICY_CAP:
+        return (f"Heads up — the loan amount you're asking for is {ltv:.1f}% of the "
+                f"vehicle's price, above our usual {C.LTV_POLICY_CAP:.0f}% financing cap. "
+                f"You could lower the loan amount or add a bigger down payment if you'd "
+                f"like to adjust it, or I can go ahead and submit it as is.")
+    return None
 
 def run_session(answers: dict, interactive: bool = False, session_id: str | None = None) -> dict:
     """Drive the flow from a dict of raw text answers (keys = STEP keys)."""
@@ -184,6 +192,7 @@ def run_session(answers: dict, interactive: bool = False, session_id: str | None
         collected[key] = value
 
     applicant = _assemble(collected)
+    ltv_flag = _ltv_policy_flag(applicant)
     result = predict_customer(applicant)                    # <-- DECISION (ML, not LLM)
 
     explanation = llm_client.explain(result) or _template_explanation(result)
@@ -196,6 +205,7 @@ def run_session(answers: dict, interactive: bool = False, session_id: str | None
         "confidence": result["confidence"], "reason_codes": result.get("reason_codes", []),
         "explanation": explanation, "next_steps": _next_steps(result),
         "derived_fields": {k: applicant.get(k) for k in ("LTV", "Final_Tier", "Make_Code", "Product_Code")},
+        "policy_flags": [ltv_flag] if ltv_flag else [],
         "llm_mode": "claude-haiku-4-5" if llm_client.online() else "offline-deterministic",
         "logged_as": entry["applicant_hash"],
     }
@@ -208,6 +218,10 @@ def _present(p):
     print("\n" + "=" * 64)
     print(f"  DECISION: {p['decision']}   (P(decline)={p['prob_decline']:.1%}, "
           f"calibrated PD={p['calibrated_pd']:.1%}, confidence={p['confidence']:.0%})")
+    if p.get("policy_flags"):
+        print("-" * 64)
+        for f in p["policy_flags"]:
+            print(f"  ⚠ {f}") 
     print("-" * 64)
     print(p["explanation"])
     if p["reason_codes"]:
