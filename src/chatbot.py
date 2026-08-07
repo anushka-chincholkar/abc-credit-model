@@ -126,6 +126,7 @@ def log_application(answers, result, session_id):
         "confidence": result.get("confidence"),
         "reason_codes": [r.get("code") for r in (result.get("reason_codes") or [])],
         "missing_fields": result.get("missing_fields"),
+     "policy_flags": [] if not answers else _policy_flags(answers),
     }
     with open(LOG_PATH, "a") as f:
         f.write(json.dumps(entry, default=str) + "\n")
@@ -140,18 +141,37 @@ def _next_steps(result):
             "You may improve your chances with a larger down-payment (lower LTV) or a co-applicant.",
             "You can reapply after 90 days."]
 
+def _policy_flags(answers: dict) -> list[str]:
+    """Deterministic, pre-decision policy checks (not risk explanations)."""
+    flags = []
+    ltv = answers.get("LTV")
+    try:
+        ltv = float(ltv) if ltv is not None else None
+    except (TypeError, ValueError):
+        ltv = None
+    if ltv is not None and ltv > C.LTV_POLICY_CAP:
+        flags.append(
+            f"Requested financing is {ltv:.1f}% of the vehicle's value, above our "
+            f"standard {C.LTV_POLICY_CAP:.0f}% cap. A larger down payment (lower loan "
+            f"amount relative to vehicle price) is recommended."
+        )
+    return flags
+
 
 def run_session(answers: dict, interactive=False, session_id=None) -> dict:
     """Score a completed answer set, log it, and return the presentation payload."""
     session_id = session_id or datetime.now(timezone.utc).strftime("S%Y%m%d%H%M%S%f")
     result = predict_customer(answers)
     entry = log_application(answers, result, session_id)
+    policy_flags = _policy_flags(answers)
     payload = {"session_id": session_id, "decision": result["decision"],
                "prob_approve": result["prob_approve"], "prob_decline": result["prob_decline"],
                "calibrated_pd": result.get("calibrated_pd"),
                "confidence": result["confidence"], "risk_explanation": result["risk_explanation"],
                "reason_codes": result.get("reason_codes", []),
-               "next_steps": _next_steps(result), "logged_as": entry["applicant_hash"]}
+               "policy_flags": policy_flags,
+               "next_steps": policy_flags + _next_steps(result),
+               "logged_as": entry["applicant_hash"]}
     if interactive:
         _present(payload)
     return payload
